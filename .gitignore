@@ -9,3 +9,5 @@ frontend/dist/
 *.pyc
 __pycache__/
 .DS_Store
+AGENTS.md
+PROJECT_SPECIFICATION.md
