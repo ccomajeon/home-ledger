@@ -1,0 +1,11 @@
+backend/.venv/
+backend/.pytest_cache/
+backend/.ruff_cache/
+backend/data/
+backend/*.egg-info/
+backend/pytest-cache-files-*/
+frontend/node_modules/
+frontend/dist/
+*.pyc
+__pycache__/
+.DS_Store

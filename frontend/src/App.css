@@ -1,0 +1,49 @@
+.layout {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.nav {
+  display: flex;
+  gap: 12px;
+}
+
+.card {
+  border: 1px solid #d4d4d8;
+  border-radius: 12px;
+  padding: 16px;
+  background: #ffffff;
+}
+
+.stack {
+  display: grid;
+  gap: 12px;
+}
+
+.button {
+  border: 1px solid #18181b;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #18181b;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.button-secondary {
+  border: 1px solid #18181b;
+  background: #ffffff;
+  color: #18181b;
+}
