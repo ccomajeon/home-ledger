@@ -1,36 +1,39 @@
-# 백엔드 실행 안내 (FastAPI)
+# 백엔드 실행 안내
+
+FastAPI와 SQLAlchemy로 구성된 Home Ledger API입니다.
 
 ## 설치
 
 ```powershell
 cd backend
 python -m venv .venv
-.venv\Scripts\activate
-pip install -U pip
-pip install -e ".[dev]"
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e ".[dev]"
 ```
 
-Windows에서 `python` 명령이 동작하지 않으면 다음과 같이 실행하세요.
+## 개발 서버
 
 ```powershell
-& "$env:LocalAppData\Programs\Python\Python312\python.exe" -m venv .venv
-```
-
-## 실행
-
-```powershell
-cd backend
 uvicorn app.main:app --reload --port 8000
 ```
 
-## 테스트
+앱 시작 시 SQLite 테이블과 기본 카테고리·결제수단·OWNER 계정이 자동으로
+준비됩니다. API 문서는 `http://localhost:8000/docs`에서 확인할 수 있습니다.
+
+## 로컬 관리자 인증
+
+`LOCAL_ADMIN_ENABLED=true`와 `LOCAL_ADMIN_PASSWORD_HASH`가 설정되면
+`POST /auth/local-login`을 사용할 수 있습니다. 비밀번호는
+`app.utils.security.create_password_hash`로 생성한 Argon2 해시만 환경 파일에
+저장합니다. 로그인에 성공한 로컬 계정은 항상 활성화된 `OWNER` 권한을 갖습니다.
+반복 실패 요청에는 IP 기준 로그인 제한이 적용됩니다.
+
+## 검사
 
 ```powershell
-cd backend
-pytest -q
+python -m ruff check app tests
+python -m black --check app tests
+python -m pytest -q
 ```
 
-## 참고
-
-- `/api/me`는 현재 기본 동작이 `401`로 닫힘 상태입니다.
-- Alembic 마이그레이션 골격은 준비돼 있으며, 초기 스키마 생성은 단계적으로 반영됩니다.
+환경 변수는 `.env.example`을 `.env`로 복사한 뒤 수정하세요.

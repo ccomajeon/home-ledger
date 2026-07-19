@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiGet, ApiError } from "../api/client";
-
-export type CurrentUser = {
-  email: string;
-  role: string;
-};
+import type { CurrentUser } from "../api/types";
 
 type MeState = {
   loading: boolean;
@@ -24,16 +20,15 @@ export function useMe() {
 
     apiGet<CurrentUser>("/api/me")
       .then((user) => {
-        if (!active) return;
-        setState({ loading: false, user, errorStatus: null });
+        if (active) setState({ loading: false, user, errorStatus: null });
       })
       .catch((error: unknown) => {
         if (!active) return;
-        if (error instanceof ApiError) {
-          setState({ loading: false, user: null, errorStatus: error.status });
-          return;
-        }
-        setState({ loading: false, user: null, errorStatus: 500 });
+        setState({
+          loading: false,
+          user: null,
+          errorStatus: error instanceof ApiError ? error.status : 500,
+        });
       });
 
     return () => {
@@ -43,4 +38,3 @@ export function useMe() {
 
   return state;
 }
-

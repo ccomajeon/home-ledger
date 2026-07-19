@@ -11,6 +11,20 @@ Read the latest entries first to reduce context usage.
 - Tests: command -> pass/fail (or not run)
 - Next: next planned step
 
+## 2026-07-20 00:58 (local)
+
+- Files: `.gitignore`, `backend/*`, `frontend/*`, `scripts/*`, `README.md`, `RELEASE.md`, `HISTORY.md`
+- Summary: Added the Argon2-backed `SYSTEM` local OWNER login, login throttling, auth capability discovery, and a full modern responsive redesign for the login shell and finance dashboard. Hardened the one-command build harness to stop on every failed native command.
+- Tests: `scripts/build.ps1` passed with backend Black/Ruff and Pytest 16 passed, frontend Prettier/ESLint and Vitest 4 passed, Vite production build passed, and npm audit 0 vulnerabilities; `scripts/smoke.ps1 -Port 8766` passed; live browser login, OWNER admin access, desktop/mobile layout, and console errors verified.
+- Next: Review the final secret-safe diff, commit the release, then push when GitHub authentication is available.
+
+## 2026-07-19 23:02 (local)
+
+- Files: `backend/*`, `frontend/*`, `scripts/*`, `README.md`, `RELEASE.md`, `HISTORY.md`
+- Summary: Completed the v0.2.0 household-ledger MVP with Google OAuth sessions, ledger CRUD and summaries, settings, OWNER administration, audit logging, SQLite backup/restore, responsive UI, and one-command build/start harnesses.
+- Tests: `scripts/build.ps1` -> pass; backend `pytest` 14 passed; Ruff/Black passed; frontend ESLint/Vitest 4 passed/Vite build passed; `npm audit` 0 vulnerabilities; `scripts/smoke.ps1` -> API and frontend pass.
+- Next: Review the final diff, commit the release, push the feature branch, and open a draft PR.
+
 ## 2026-03-03 22:58 (local)
 
 - Files: AGENTS.md, HISTORY.md

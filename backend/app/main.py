@@ -1,11 +1,16 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.auth.routes import router as auth_router
 from app.config import get_settings
 from app.db.base import Base
+from app.db.seed import seed_defaults
+from app.db.session import SessionLocal
 from app.db.session import engine
 from app.routes.admin import router as admin_router
 from app.routes.categories import router as categories_router
@@ -21,10 +26,12 @@ setup_logging()
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     Base.metadata.create_all(bind=engine)
+    with SessionLocal() as db:
+        seed_defaults(db)
     yield
 
 
-app = FastAPI(title="Home Ledger API", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="Home Ledger API", version="0.2.1", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
@@ -40,8 +47,17 @@ app.include_router(categories_router)
 app.include_router(payment_methods_router)
 app.include_router(admin_router)
 
+frontend_dist = Path(__file__).resolve().parents[2] / "frontend" / "dist"
+if frontend_dist.is_dir():
+    assets = frontend_dist / "assets"
+    if assets.is_dir():
+        app.mount("/assets", StaticFiles(directory=assets), name="frontend-assets")
 
-@app.get("/api/me", tags=["auth"])
-async def me() -> dict[str, str]:
-    # Session auth is not wired yet; default to closed.
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
+    @app.get("/{path:path}", include_in_schema=False)
+    async def frontend(path: str) -> FileResponse:
+        if path.startswith(("api/", "auth/")):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        requested = (frontend_dist / path).resolve()
+        if requested.is_file() and frontend_dist.resolve() in requested.parents:
+            return FileResponse(requested)
+        return FileResponse(frontend_dist / "index.html")

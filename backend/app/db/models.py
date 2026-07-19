@@ -56,4 +56,3 @@ class AuditLog(Base):
     action: Mapped[str] = mapped_column(String(100))
     payload: Mapped[str] = mapped_column(Text, default="{}")
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-

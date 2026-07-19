@@ -1,5 +1,9 @@
 backend/.venv/
+backend/.env
 backend/.pytest_cache/
+backend/.pytest-tmp/
+backend/.pytest-build/
+backend/.black-cache/
 backend/.ruff_cache/
 backend/data/
 backend/*.egg-info/
