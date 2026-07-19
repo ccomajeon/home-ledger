@@ -2,6 +2,7 @@ from pathlib import Path
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from app.config import get_settings
 
@@ -27,12 +28,17 @@ def _normalize_sqlite_url(url: str) -> str:
 
 db_url = _normalize_sqlite_url(settings.db_url)
 
-engine = create_engine(
-    db_url,
-    connect_args={"check_same_thread": False} if db_url.startswith("sqlite") else {},
-)
+engine_options: dict[str, object] = {}
+if db_url.startswith("sqlite"):
+    engine_options["connect_args"] = {"check_same_thread": False}
+if db_url == "sqlite:///:memory:":
+    engine_options["poolclass"] = StaticPool
 
-SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False, class_=Session)
+engine = create_engine(db_url, **engine_options)
+
+SessionLocal = sessionmaker(
+    bind=engine, autocommit=False, autoflush=False, class_=Session
+)
 
 
 def get_db() -> Session:
